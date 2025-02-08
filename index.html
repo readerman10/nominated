@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Filminhos Nomeados para 2025</title>
+  <!-- Fonte Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Remover rolagem horizontal do site */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Container Geral */
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      background: #d3d3d3;
+      color: black;
+      padding: 15px 30px;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .logo {
+      width: 60px;
+      height: auto;
+      margin-right: 15px;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 600;
+    }
+
+    .movie-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 900px;
+      width: 100%;
+      margin-top: 20px;
+      flex-grow: 1;
+      padding-bottom: 50px;
+      box-sizing: border-box;
+    }
+
+    .movie-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 280px;
+      box-sizing: border-box;
+    }
+
+    .movie-card img {
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    .download-btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .download-btn {
+      background: black;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      min-width: 100px;
+      font-weight: 600;
+    }
+
+    footer {
+      width: 100%;
+      background: white;
+      color: black;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: auto;
+      font-size: 24px;
+    }
+
+    /* Botão de "Carregar Mais" */
+    .load-more-container {
+      text-align: center;
+      margin: 20px 0;
+      width: 100%;
+    }
+
+    .load-more-btn {
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .header-content {
+        flex-direction: column;
+      }
+
+      .logo {
+        margin-bottom: 10px;
+      }
+    }
+
+    /* Estilos da Tela de Senha */
+    #password-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;   /* Para ocupar toda a tela */
+      height: 100vh;  /* Para ocupar toda a tela */
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000; /* Valor alto para ficar acima de todo o conteúdo */
+      padding: 20px;
+      box-sizing: border-box;
+      overflow: hidden; /* Impede rolagem dentro da tela de senha */
+    }
+
+    .password-container {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .password-container img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    .password-container label {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .password-container input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .password-container button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .password-container .error-message {
+      color: red;
+      margin-top: 10px;
+      display: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Tela de Senha -->
+  <div id="password-screen">
+    <div class="password-container">
+      <img src="https://i.imgur.com/xnM43qw.png" alt="Ilustração de acesso">
+      <form id="password-form">
+        <label for="password-input">Qual é a realidade que me cerca, mas que não consigo ver?</label>
+        <!-- Campo de 6 dígitos -->
+        <input 
+          type="password" 
+          id="password-input" 
+          placeholder="Digite a senha" 
+          maxlength="6" 
+          minlength="6" 
+          pattern=".{6}" 
+          title="A senha deve ter 6 caracteres"
+        >
+        <button type="submit">Entrar</button>
+        <p class="error-message">Senha incorreta. Nem viu o filme num é?.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <header>
+    <div class="header-content">
+      <!-- Atualize o caminho do logo conforme necessário -->
+      <img src="https://i.imgur.com/xnM43qw.png" alt="Logo" class="logo">
+      <div class="title">OSCAR 2025</div>
+    </div>
+  </header>
+
+  <div class="movie-list" id="movies"></div>
+  
+  <!-- Contêiner e botão para "Carregar Mais" -->
+  <div class="load-more-container">
+    <button class="load-more-btn" id="load-more-btn">Carregar Mais</button>
+  </div>
+
+  <footer>
+    🏴‍☠️
+  </footer>
+
+  <script>
+    // Validação da Senha
+    document.getElementById('password-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var password = document.getElementById('password-input').value.trim();
+      var errorMessage = document.querySelector('.error-message');
+      if (password === 'matrix') {
+        // Senha correta: oculta a tela de senha
+        document.getElementById('password-screen').style.display = 'none';
+      } else {
+        // Senha incorreta: exibe mensagem de erro
+        errorMessage.style.display = 'block';
+      }
+    });
+
+    // Lista de filmes do "Oscar 2025"
+    var oscarMovies2025 = [
+      "Anora", "The Brutalist", "A Complete Unknown", "Conclave", "Dune: Part Two", 
+      "Emilia Pérez", "Nickel Boys", "The Substance", "Wicked", 
+      "A Real Pain", "September 5", "Sing Sing", "Flow", "Inside Out 2", 
+      "Memoir of a Snail", "Wallace & Gromit: Vengeance Most Fowl", "The Wild Robot", 
+      "Nosferatu", "Gladiator II", "Maria", "A Different Man", "Alien: Romulus", 
+      "Kingdom of the Planet of the Apes", "The Six Triple Eight", 
+      "Elton John: Never Too Late", "Black Box Diaries", "No Other Land", 
+      "Porcelain War", "Soundtrack to a Coup d’Etat", "Sugarcane", 
+      "The Girl With the Needle", "The Seed of the Sacred Fig", "In the Shadow of the Cypress", "Magic Candies", "Wander to Wonder", "Yuck!", 
+      "Death by Numbers", "I Am Ready, Warden", "Incident", "Instruments of a Beating Heart", 
+      "The Only Girl in the Orchestra", "A Lien", "Anuja", "I'm Not a Robot", 
+      "The Last Ranger", "The Man Who Could Not Remain Silent"
+    ];
+
+    // Variáveis para a paginação
+    var currentPage = 1;          // Página atual
+    var pageSize = 5;            // Quantos filmes por página
+    var totalPages = Math.ceil(oscarMovies2025.length / pageSize);
+
+    /**
+     * Função que recebe uma lista de títulos e faz as requisições na API
+     * em paralelo usando Promise.all, depois renderiza cada resultado.
+     */
+    async function fetchMoviesForTitles(titles) {
+      const requests = titles.map(async (title) => {
+        try {
+          let response = await fetch("https://yts.mx/api/v2/list_movies.json?query_term=" + encodeURIComponent(title) + "&limit=1");
+          let data = await response.json();
+          return { title, data };
+        } catch (err) {
+          console.error("Erro ao buscar filme:", title, err);
+          return null;
+        }
+      });
+      
+      // Aguarda todas as requisições do lote
+      const results = await Promise.all(requests);
+      
+      // Para cada resposta, verifica e renderiza
+      results.forEach((res) => {
+        if (!res || !res.data) return;
+        if (res.data.data.movie_count > 0) {
+          var movie = res.data.data.movies[0];
+          renderMovieCard(movie);
+        } else {
+          console.log("Filme não disponível:", res.title);
+        }
+      });
+    }
+
+    /**
+     * Função que realmente renderiza (exibe) um cartão de filme na página.
+     */
+    function renderMovieCard(movie) {
+      var movieContainer = document.getElementById('movies');
+
+      // Filtra torrents x265 (se não quiser exibir)
+      var downloadButtons = movie.torrents
+        .filter(torrent => !torrent.url.includes("x265"))
+        .map(torrent => {
+          return `
+            <button class='download-btn' onclick="window.open('${torrent.url}', '_blank')">
+              ${torrent.quality}
+            </button>`;
+        })
+        .join('');
+
+      // Monta o cartão do filme
+      var movieCard = `
+        <div class='movie-card'>
+          <img src='${movie.medium_cover_image}' alt='${movie.title}'>
+          <h3>${movie.title} (${movie.year})</h3>
+          <p>${movie.runtime} min</p>
+          <p>Público: ⭐ ${movie.rating}</p>
+          <div class='download-btn-container'>
+            ${downloadButtons}
+          </div>
+        </div>`;
+      
+      // Adiciona ao container principal
+      movieContainer.innerHTML += movieCard;
+    }
+
+    /**
+     * Função para carregar a próxima página de filmes.
+     */
+    function loadNextPage() {
+      if (currentPage <= totalPages) {
+        // Cálculo dos índices (slice) para pegar parte do array de filmes
+        var startIndex = (currentPage - 1) * pageSize;
+        var endIndex = startIndex + pageSize;
+        var pageTitles = oscarMovies2025.slice(startIndex, endIndex);
+
+        // Faz as requisições para esse lote de títulos
+        fetchMoviesForTitles(pageTitles);
+
+        // Incrementa o contador de página
+        currentPage++;
+
+        // Se chegamos além do total de páginas, podemos esconder ou desabilitar o botão
+        if (currentPage > totalPages) {
+          document.getElementById('load-more-btn').style.display = 'none';
+        }
+      }
+    }
+
+    /**
+     * Ao carregar a página, iniciamos com a primeira página de filmes.
+     */
+    window.onload = function() {
+      // Primeira página ao carregar
+      loadNextPage();
+
+      // Atribui a função loadNextPage ao botão "Carregar Mais"
+      document.getElementById('load-more-btn')
+              .addEventListener('click', loadNextPage);
+    };
+  </script>
+</body>
+</html>
