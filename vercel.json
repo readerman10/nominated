@@ -1,0 +1,6 @@
+{
+    "rewrites": [
+      { "source": "/cnpj", "destination": "/cnpj.html" }
+    ]
+  }
+  
