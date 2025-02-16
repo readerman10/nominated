@@ -3,121 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta CNPJ</title>
+    <title>Consulta de CNPJ</title>
+    
+    <!-- Tailwind CSS + Flowbite -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.js"></script>
+    
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            height: 100vh;
             padding: 20px;
-            background-color: #f4f4f4;
-        }
-        h2 {
-            color: #333;
-        }
-        .container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-        .input-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        input {
-            width: calc(100% - 20px);
-            padding: 12px;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            text-align: center;
-            display: block;
-        }
-        button {
-            width: calc(100% - 20px);
-            padding: 12px;
-            margin: 0 auto;
-            border: none;
-            background: #28a745;
-            color: white;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: block;
-        }
-        button:hover {
-            background: #218838;
-        }
-        #resultado {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 5px;
-            background: #fff;
-            text-align: left;
-            display: none;
-        }
-        .loading {
-            text-align: center;
-            font-size: 18px;
-            color: #666;
         }
     </style>
 </head>
 <body>
-    <h2>Consulta de CNPJ</h2>
-    <div class="container">
-        <div class="input-container">
-            <input type="text" id="cnpj" placeholder="Digite o CNPJ" maxlength="18">
-            <button onclick="consultarCNPJ()">Buscar</button>
+    <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">CONSULTA CNPJ</h2>
+        <p class="text-gray-600 text-center mb-4">Encontre informações como telefone, nome fantasia e endereço de qualquer empreendimento.</p>
+        
+        <form id="cnpjForm" class="space-y-4">
+            <div class="relative">
+                <label for="cnpj" class="block text-sm font-medium text-gray-700">CNPJ da Empresa</label>
+                <div class="relative">
+                    <input type="text" id="cnpj" maxlength="18" placeholder="00.000.000/0000-00" class="mt-1 p-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-left pr-10">
+                    <button type="button" id="clearCnpj" class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600" title="Limpar">
+                        ✖
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" id="consultarBtn" disabled class="w-full bg-gray-400 text-white py-3 px-4 rounded-lg font-semibold cursor-not-allowed">BUSCAR</button>
+        </form>
+        
+        <div id="resultado" class="mt-6 hidden bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-300">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Dados da Empresa</h3>
+            <div id="resultado-conteudo" class="text-gray-700"></div>
         </div>
-        <div id="resultado"></div>
     </div>
     
     <script>
         $(document).ready(function() {
             $('#cnpj').mask('00.000.000/0000-00');
+            $('#cnpj').on('input', function() {
+                let cnpj = this.value.replace(/\D/g, '');
+                $('#consultarBtn').prop('disabled', cnpj.length !== 14);
+                $('#consultarBtn').toggleClass('bg-gray-400 cursor-not-allowed', cnpj.length !== 14);
+                $('#consultarBtn').toggleClass('bg-blue-600 hover:bg-blue-700', cnpj.length === 14);
+            });
+            $('#clearCnpj').click(function() {
+                $('#cnpj').val('');
+                $('#consultarBtn').prop('disabled', true).removeClass('bg-blue-600 hover:bg-blue-700').addClass('bg-gray-400 cursor-not-allowed');
+            });
+        });
+
+        document.getElementById('cnpjForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            consultarCNPJ();
         });
 
         async function consultarCNPJ() {
             let cnpj = document.getElementById('cnpj').value.replace(/\D/g, '');
-            if (cnpj.length !== 14) {
-                alert('CNPJ inválido. Digite corretamente.');
-                return;
-            }
             
             let resultado = document.getElementById('resultado');
+            let resultadoConteudo = document.getElementById('resultado-conteudo');
             resultado.style.display = 'block';
-            resultado.innerHTML = '<p class="loading">Buscando...</p>';
+            resultadoConteudo.innerHTML = '<p class="text-gray-600">Buscando informações...</p>';
             
             try {
                 let response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
                 let data = await response.json();
                 if (data.message) {
-                    resultado.innerHTML = '<p style="color: red;">CNPJ não encontrado.</p>';
+                    resultadoConteudo.innerHTML = '<p class="text-red-600">Nenhuma empresa encontrada.</p>';
                     return;
                 }
                 
-                resultado.innerHTML = `
-                    <strong>Razão Social:</strong> ${data.razao_social || 'N/A'}<br>
-                    <strong>Nome Fantasia:</strong> ${data.nome_fantasia || 'N/A'}<br>
-                    <strong>CNPJ:</strong> ${data.cnpj}<br>
-                    <strong>Telefone:</strong> ${data.ddd_telefone_1 || 'N/A'}<br>
-                    <strong>Endereço:</strong> ${data.logradouro}, ${data.numero || 'S/N'} - ${data.bairro} <br>
-                    <strong>Cidade:</strong> ${data.municipio} - ${data.uf} <br>
-                    <strong>Situação Cadastral:</strong> ${data.situacao}<br>
+                resultadoConteudo.innerHTML = `
+                    <p><strong>Razão Social:</strong> ${data.razao_social || 'Não disponível'}</p>
+                    <p><strong>Nome Fantasia:</strong> ${data.nome_fantasia || 'Não disponível'}</p>
+                    <p><strong>Telefone:</strong> ${data.ddd_telefone_1 || 'Não informado'}</p>
+                    <p><strong>Endereço:</strong> ${data.logradouro}, ${data.numero || 'S/N'} - ${data.bairro}, ${data.municipio} - ${data.uf}</p>
+                    <p><strong>Situação:</strong> ${data.situacao}</p>
+                    <p><strong>Abertura:</strong> ${data.data_inicio || 'Não informado'}</p>
                 `;
             } catch (error) {
-                resultado.innerHTML = '<p style="color: red;">Erro ao buscar CNPJ. Tente novamente mais tarde.</p>';
+                resultadoConteudo.innerHTML = '<p class="text-red-600">Erro ao buscar informações. Tente novamente.</p>';
             }
         }
     </script>
