@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta CNPJ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            display: block;
+        }
+        button {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin: 0 auto;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: block;
+        }
+        button:hover {
+            background: #218838;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background: #fff;
+            text-align: left;
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h2>Consulta de CNPJ</h2>
+    <div class="container">
+        <div class="input-container">
+            <input type="text" id="cnpj" placeholder="Digite o CNPJ" maxlength="18">
+            <button onclick="consultarCNPJ()">Buscar</button>
+        </div>
+        <div id="resultado"></div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            $('#cnpj').mask('00.000.000/0000-00');
+        });
+
+        async function consultarCNPJ() {
+            let cnpj = document.getElementById('cnpj').value.replace(/\D/g, '');
+            if (cnpj.length !== 14) {
+                alert('CNPJ inválido. Digite corretamente.');
+                return;
+            }
+            
+            let resultado = document.getElementById('resultado');
+            resultado.style.display = 'block';
+            resultado.innerHTML = '<p class="loading">Buscando...</p>';
+            
+            try {
+                let response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+                let data = await response.json();
+                if (data.message) {
+                    resultado.innerHTML = '<p style="color: red;">CNPJ não encontrado.</p>';
+                    return;
+                }
+                
+                resultado.innerHTML = `
+                    <strong>Razão Social:</strong> ${data.razao_social || 'N/A'}<br>
+                    <strong>Nome Fantasia:</strong> ${data.nome_fantasia || 'N/A'}<br>
+                    <strong>CNPJ:</strong> ${data.cnpj}<br>
+                    <strong>Telefone:</strong> ${data.ddd_telefone_1 || 'N/A'}<br>
+                    <strong>Endereço:</strong> ${data.logradouro}, ${data.numero || 'S/N'} - ${data.bairro} <br>
+                    <strong>Cidade:</strong> ${data.municipio} - ${data.uf} <br>
+                    <strong>Situação Cadastral:</strong> ${data.situacao}<br>
+                `;
+            } catch (error) {
+                resultado.innerHTML = '<p style="color: red;">Erro ao buscar CNPJ. Tente novamente mais tarde.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
