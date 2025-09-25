@@ -222,7 +222,7 @@
     <div class="password-container">
       <img src="https://i.imgur.com/xnM43qw.png" alt="Ilustração de acesso">
       <form id="password-form">
-        <label for="password-input">Qual é a realidade que me cerca, mas que não consigo ver?</label>
+        <label for="password-input">Quem sou eu?</label>
         <!-- Campo de 6 dígitos -->
         <input 
           type="password" 
@@ -243,8 +243,8 @@
   <header>
     <div class="header-content">
       <!-- Atualize o caminho do logo conforme necessário -->
-      <img src="https://i.imgur.com/xnM43qw.png" alt="Logo" class="logo">
-      <div class="title">FILMINHOS QUE EU GOSTO</div>
+      <img src="https://images.squarespace-cdn.com/content/v1/5f7b6b878bc0ae38f1a90349/1611090998260-Q95NXDWMX41V670YXF1G/creed-the-office-cross-stitch-pattern-melarise-embroidery-web.jpg" alt="Logo" class="logo">
+      <div class="title">FILMINHOS QUE EU VI</div>
     </div>
   </header>
 
@@ -265,7 +265,7 @@
       event.preventDefault();
       var password = document.getElementById('password-input').value.trim();
       var errorMessage = document.querySelector('.error-message');
-      if (password === 'matrix') {
+      if (password.toLowerCase() === 'creed') {
         // Senha correta: oculta a tela de senha
         document.getElementById('password-screen').style.display = 'none';
       } else {
@@ -397,5 +397,6 @@
   </script>
 </body>
 </html>
+
 
 
