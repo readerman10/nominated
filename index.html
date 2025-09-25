@@ -279,6 +279,12 @@
       "Relay",
     ];
 
+    // Mapeamento de legendas para os filmes
+    var movieSubtitles = {
+      "Relay": "https://limewire.com/?referrer=pq7i8xx7p2",
+      // Adicione mais filmes e suas legendas aqui conforme necessário
+    };
+
     // Variáveis para a paginação
     var currentPage = 1;          // Página atual
     var pageSize = 5;            // Quantos filmes por página
@@ -332,6 +338,11 @@
         })
         .join('');
 
+      // Verifica se existe legenda para o filme
+      var subtitleUrl = movieSubtitles[movie.title] || movieSubtitles[movie.title_english];
+      var subtitleButton = subtitleUrl ? 
+        `<button class='download-btn' onclick="window.open('${subtitleUrl}', '_blank')">Legenda</button>` : '';
+
       // Monta o cartão do filme
       var movieCard = `
         <div class='movie-card'>
@@ -341,6 +352,7 @@
           <p>Público: ⭐ ${movie.rating}</p>
           <div class='download-btn-container'>
             ${downloadButtons}
+            ${subtitleButton}
           </div>
         </div>`;
       
@@ -385,5 +397,4 @@
   </script>
 </body>
 </html>
-
 
