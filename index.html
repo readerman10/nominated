@@ -4,6 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Filminhos Que Eu Gostei Em 2025</title>
+  
+  <!-- Meta tags para compartilhamento no WhatsApp -->
+  <meta property="og:title" content="Filminhos Que Eu Gostei Em 2025">
+  <meta property="og:description" content="Coleção de filmes que assisti e recomendo em 2025. Acesso com senha 'creed'.">
+  <meta property="og:image" content="https://images.squarespace-cdn.com/content/v1/5f7b6b878bc0ae38f1a90349/1611090998260-Q95NXDWMX41V670YXF1G/creed-the-office-cross-stitch-pattern-melarise-embroidery-web.jpg">
+  <meta property="og:url" content="">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Filminhos Que Eu Vi">
+  
+  <!-- Meta tags para Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Filminhos Que Eu Gostei Em 2025">
+  <meta name="twitter:description" content="Coleção de filmes que assisti e recomendo em 2025. Acesso com senha 'creed'.">
+  <meta name="twitter:image" content="https://images.squarespace-cdn.com/content/v1/5f7b6b878bc0ae38f1a90349/1611090998260-Q95NXDWMX41V670YXF1G/creed-the-office-cross-stitch-pattern-melarise-embroidery-web.jpg">
+  
   <!-- Fonte Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
@@ -255,7 +270,7 @@
       ⚠️ ATENÇÃO ⚠️
     </div>
     <div style="font-size: 14px; color: #333; font-style: italic;">
-      🕐 Os links das legendas têm validade de apenas 7 dias!<br>
+      Os links das legendas têm validade de apenas 7 dias!<br>
     </div>
     <div style="margin-top: 10px; font-size: 20px;">
       🏴‍☠️
@@ -282,12 +297,12 @@
       "Relay","Jerry And Marge Go Large"
     ];
 
-    // Mapeamento de legendas para os filmes
-    var movieSubtitles = {
-      "Relay": "https://limewire.com/?referrer=pq7i8xx7p2",
-      "Jerry And Marge Go Large": "https://limewire.com/?referrer=pq7i8xx7p2"
-      // Adicione mais filmes e suas legendas aqui conforme necessário
-    };
+    // Lista de legendas na mesma ordem dos filmes
+    var movieSubtitles = [
+      "https://limewire.com/?referrer=pq7i8xx7p2",  // Relay
+      "https://limewire.com/?referrer=pq7i8xx7p2"   // Jerry And Marge Go Large
+      // Adicione mais links de legenda na mesma ordem dos filmes
+    ];
 
     // Variáveis para a paginação
     var currentPage = 1;          // Página atual
@@ -299,11 +314,11 @@
      * em paralelo usando Promise.all, depois renderiza cada resultado.
      */
     async function fetchMoviesForTitles(titles) {
-      const requests = titles.map(async (title) => {
+      const requests = titles.map(async (title, index) => {
         try {
           let response = await fetch("https://yts.mx/api/v2/list_movies.json?query_term=" + encodeURIComponent(title) + "&limit=1");
           let data = await response.json();
-          return { title, data };
+          return { title, data, originalIndex: index };
         } catch (err) {
           console.error("Erro ao buscar filme:", title, err);
           return null;
@@ -318,7 +333,7 @@
         if (!res || !res.data) return;
         if (res.data.data.movie_count > 0) {
           var movie = res.data.data.movies[0];
-          renderMovieCard(movie);
+          renderMovieCard(movie, res.originalIndex);
         } else {
           console.log("Filme não disponível:", res.title);
         }
@@ -328,7 +343,7 @@
     /**
      * Função que realmente renderiza (exibe) um cartão de filme na página.
      */
-    function renderMovieCard(movie) {
+    function renderMovieCard(movie, subtitleIndex) {
       var movieContainer = document.getElementById('movies');
 
       // Filtra torrents x265 (se não quiser exibir)
@@ -342,8 +357,8 @@
         })
         .join('');
 
-      // Verifica se existe legenda para o filme
-      var subtitleUrl = movieSubtitles[movie.title] || movieSubtitles[movie.title_english];
+      // Busca a legenda pela posição/índice
+      var subtitleUrl = movieSubtitles[subtitleIndex];
       var subtitleButton = subtitleUrl ? 
         `<button class='download-btn' onclick="window.open('${subtitleUrl}', '_blank')">Legenda</button>` : '';
 
@@ -401,7 +416,6 @@
   </script>
 </body>
 </html>
-
 
 
 
