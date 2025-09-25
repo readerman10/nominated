@@ -7,7 +7,7 @@
   
   <!-- Meta tags para compartilhamento no WhatsApp -->
   <meta property="og:title" content="Filminhos Que Eu Gostei Em 2025">
-  <meta property="og:description" content="Coleção de filmes que assisti e recomendo em 2025.">
+  <meta property="og:description" content="Coleção de filmes que assisti e recomendo em 2025. Acesso com senha 'creed'.">
   <meta property="og:image" content="https://images.squarespace-cdn.com/content/v1/5f7b6b878bc0ae38f1a90349/1611090998260-Q95NXDWMX41V670YXF1G/creed-the-office-cross-stitch-pattern-melarise-embroidery-web.jpg">
   <meta property="og:url" content="">
   <meta property="og:type" content="website">
@@ -16,7 +16,7 @@
   <!-- Meta tags para Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Filminhos Que Eu Gostei Em 2025">
-  <meta name="twitter:description" content="Coleção de filmes que assisti e recomendo em 2025.">
+  <meta name="twitter:description" content="Coleção de filmes que assisti e recomendo em 2025. Acesso com senha 'creed'.">
   <meta name="twitter:image" content="https://images.squarespace-cdn.com/content/v1/5f7b6b878bc0ae38f1a90349/1611090998260-Q95NXDWMX41V670YXF1G/creed-the-office-cross-stitch-pattern-melarise-embroidery-web.jpg">
   
   <!-- Fonte Poppins -->
@@ -229,6 +229,59 @@
       display: none;
       font-size: 14px;
     }
+
+    /* Estilos da mensagem de erro da API */
+    .api-error-container {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .api-error-container h3 {
+      color: #856404;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .api-error-container p {
+      color: #856404;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .api-error-container .solutions {
+      background: #f8f9fa;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .api-error-container .solutions li {
+      margin-bottom: 8px;
+      color: #495057;
+    }
+
+    .retry-btn {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    .retry-btn:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -244,7 +297,7 @@
           placeholder="Digite a senha"
         >
         <button type="submit">Entrar</button>
-        <p class="error-message">Senha incorreta. Nem viu a série num é?.</p>
+        <p class="error-message">Senha incorreta. Nem viu o série num é?.</p>
       </form>
     </div>
   </div>
@@ -270,7 +323,7 @@
       ⚠️ ATENÇÃO ⚠️
     </div>
     <div style="font-size: 14px; color: #333; font-style: italic;">
-      Os links das legendas têm validade de apenas 7 dias!<br>
+      🕐 Os links das legendas têm validade de apenas 7 dias!<br>
     </div>
     <div style="margin-top: 10px; font-size: 20px;">
       🏴‍☠️
@@ -314,6 +367,8 @@
      * em paralelo usando Promise.all, depois renderiza cada resultado.
      */
     async function fetchMoviesForTitles(titles) {
+      let moviesLoaded = 0;
+      
       const requests = titles.map(async (title, index) => {
         try {
           let response = await fetch("https://yts.mx/api/v2/list_movies.json?query_term=" + encodeURIComponent(title) + "&limit=1");
@@ -334,10 +389,16 @@
         if (res.data.data.movie_count > 0) {
           var movie = res.data.data.movies[0];
           renderMovieCard(movie, res.originalIndex);
+          moviesLoaded++;
         } else {
           console.log("Filme não disponível:", res.title);
         }
       });
+      
+      // Se nenhum filme foi carregado, mostra mensagem de erro
+      if (moviesLoaded === 0) {
+        showApiError();
+      }
     }
 
     /**
@@ -403,6 +464,32 @@
     }
 
     /**
+     * Função que mostra mensagem de erro quando a API não funciona
+     */
+    function showApiError() {
+      var movieContainer = document.getElementById('movies');
+      
+      var errorMessage = `
+        <div class="api-error-container">
+          <h3>🚫 Ops! Parece que sua internet está bloqueando a API dos filmes.</h3>
+          <p>💡 Tente:</p>
+          <div class="solutions">
+            <ul>
+              <li>• Usar 5G ao invés de WiFi</li>
+              <li>• Acessar de casa</li>
+              <li>• Usar VPN</li>
+              <li>• Verificar se não está em rede corporativa</li>
+            </ul>
+          </div>
+          <p>🔄 Recarregue a página para tentar novamente.</p>
+          <button class="retry-btn" onclick="location.reload()">Tentar Novamente</button>
+        </div>
+      `;
+      z
+      movieContainer.innerHTML = errorMessage;
+    }
+
+    /**
      * Ao carregar a página, iniciamos com a primeira página de filmes.
      */
     window.onload = function() {
@@ -416,8 +503,6 @@
   </script>
 </body>
 </html>
-
-
 
 
 
